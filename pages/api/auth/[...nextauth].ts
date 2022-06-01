@@ -32,14 +32,18 @@ export default NextAuth({
             }
         },
         async jwt({ token, user, account, profile, isNewUser }) {
-            console.log(user);
-            // console.log(token);
             return token;
         },
         async session({ session, token }) {
-            session.data = {
-                role: "Admin",
-            };
+            if (token) {
+                const client = await connectToDatabase();
+                const collection = client.db().collection("user");
+                const foundEmail = await collection.findOne({
+                    emailId: token.email,
+                });
+                session.userId = foundEmail?._id.toString();
+                session.role = foundEmail?.role;
+            }
             return session;
         },
     },

@@ -6,7 +6,7 @@ import { useRouter } from "next/router";
 const AdminPage: NextPage = () => {
     const { data: session, status } = useSession();
     const router = useRouter();
-    console.log(status);
+    console.log(session);
     if (status == "unauthenticated" && !session) {
         router.replace("/");
     }
