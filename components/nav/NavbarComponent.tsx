@@ -47,6 +47,7 @@ const NavbarComponent = (props: Props) => {
 
     let menuDisplay;
     let profileDisplay;
+    let menuDesktop;
 
     if (status === "authenticated") {
         menuDisplay = (
@@ -92,17 +93,26 @@ const NavbarComponent = (props: Props) => {
                 </Menu>
             </Box>
         );
-    }
 
-    if (status === "unauthenticated") {
-        profileDisplay = (
-            <Button variant="contained" sx={{ color: "white" }}>
-                Login
-            </Button>
+        menuDesktop = (
+            <Box
+                sx={{
+                    flexGrow: 1,
+                    display: { xs: "none", md: "flex" },
+                }}
+            >
+                {pages.map((page) => (
+                    <Button
+                        key={page}
+                        onClick={handleCloseNavMenu}
+                        sx={{ my: 2, color: "white", display: "block" }}
+                    >
+                        {page}
+                    </Button>
+                ))}
+            </Box>
         );
-    }
 
-    if (status === "authenticated") {
         profileDisplay = (
             <Box sx={{ flexGrow: 0 }}>
                 <Tooltip title="Open settings">
@@ -138,24 +148,13 @@ const NavbarComponent = (props: Props) => {
         );
     }
 
-    const menuDesktop = (
-        <Box
-            sx={{
-                flexGrow: 1,
-                display: { xs: "none", md: "flex" },
-            }}
-        >
-            {pages.map((page) => (
-                <Button
-                    key={page}
-                    onClick={handleCloseNavMenu}
-                    sx={{ my: 2, color: "white", display: "block" }}
-                >
-                    {page}
-                </Button>
-            ))}
-        </Box>
-    );
+    if (status === "unauthenticated") {
+        profileDisplay = (
+            <Button variant="contained" sx={{ color: "white" }}>
+                Login
+            </Button>
+        );
+    }
 
     return (
         <AppBar position="static">
