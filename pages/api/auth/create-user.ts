@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { getSession } from "next-auth/react";
-import connectToDatabase from "../../../lib/databases";
+import connectToDatabase from "../../../lib/databaseClient";
 
 type Data = {
     message: string;
@@ -33,9 +33,10 @@ export default async function handler(
         //     return;
         // }
         const { name, emailId, empCode, role }: NewUser = req.body;
+        console.log(role);
         const client = await connectToDatabase();
         const db = client.db();
-        const collection = db.collection(role);
+        const collection = db.collection("user");
         // const foundUser = await collection.findOne({ emailId: email });
         // if (foundUser && foundUser.role === "admin") {
         if (

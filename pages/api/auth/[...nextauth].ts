@@ -1,7 +1,10 @@
 import NextAuth from "next-auth/next";
 import EmailProvider from "next-auth/providers/email";
 import { MongoDBAdapter } from "@next-auth/mongodb-adapter";
-import connectToDatabase from "../../../lib/databases";
+import connectToDatabase from "../../../lib/databaseClient";
+import { stringify } from "querystring";
+import { Session, User } from "next-auth";
+import { JWT } from "next-auth/jwt";
 
 export default NextAuth({
     secret: process.env.SECRET,
@@ -18,7 +21,7 @@ export default NextAuth({
         async signIn({ user, account, profile, email, credentials }) {
             const client = await connectToDatabase();
             const db = client.db();
-            const collection = db.collection("admin");
+            const collection = db.collection("user");
             const foundEmail = await collection.findOne({
                 emailId: user.email,
             });
@@ -27,6 +30,17 @@ export default NextAuth({
             } else {
                 return false;
             }
+        },
+        async jwt({ token, user, account, profile, isNewUser }) {
+            console.log(user);
+            // console.log(token);
+            return token;
+        },
+        async session({ session, token }) {
+            session.data = {
+                role: "Admin",
+            };
+            return session;
         },
     },
     adapter: MongoDBAdapter(connectToDatabase()),
