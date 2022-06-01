@@ -32,7 +32,7 @@ export default async function handler(
         //     });
         //     return;
         // }
-        const { name, emailId, empCode, role }: NewUser = req.body;
+        const { name, emailId, role }: NewUser = req.body;
         console.log(role);
         const client = await connectToDatabase();
         const db = client.db();
@@ -43,8 +43,7 @@ export default async function handler(
             !name ||
             name.trim().length === 0 ||
             !emailId ||
-            !emailId.includes("@smit.smu.edu.in") ||
-            !empCode ||
+            !emailId.includes("@") ||
             !role ||
             role.trim().length === 0
         ) {
@@ -54,12 +53,7 @@ export default async function handler(
             });
             return;
         }
-        const newUser = await collection.insertOne({
-            emailId,
-            name,
-            empCode,
-            role,
-        });
+        const newUser = await collection.insertOne(req.body);
         res.status(200).json({ message: "Created User" });
         return;
         // }

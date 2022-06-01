@@ -7,7 +7,7 @@ const AdminPage: NextPage = () => {
     const { data: session, status } = useSession();
     const router = useRouter();
     console.log(session);
-    if (status == "unauthenticated" && !session) {
+    if (status == "unauthenticated") {
         router.replace("/");
     }
     return (

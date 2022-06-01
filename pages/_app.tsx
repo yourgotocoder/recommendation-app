@@ -2,6 +2,8 @@ import "../styles/globals.css";
 import type { AppProps } from "next/app";
 import { SessionProvider } from "next-auth/react";
 import Head from "next/head";
+import FooterComponent from "../components/footer/FooterComponent";
+import MainLayout from "../components/layout/MainLayout";
 
 function MyApp({ Component, pageProps: { session, ...pageProps } }: AppProps) {
     return (
@@ -12,7 +14,10 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }: AppProps) {
                 </title>
                 <meta charSet="UTF-8" />
             </Head>
-            <Component {...pageProps} />
+            <MainLayout>
+                <Component {...pageProps} />
+            </MainLayout>
+            <FooterComponent />
         </SessionProvider>
     );
 }
