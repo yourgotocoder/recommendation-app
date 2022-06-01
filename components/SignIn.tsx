@@ -4,7 +4,6 @@ import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import CircularProgress from "@mui/material/CircularProgress";
 import classes from "./SignIn.module.css";
-import SignalWifiConnectedNoInternet4Icon from "@mui/icons-material/SignalWifiConnectedNoInternet4";
 
 type SingInData = {
     error: string;
@@ -27,12 +26,21 @@ const SignInForm = () => {
             setEmailInputError("Enter Email");
             return;
         }
+
+        if (!emailInputValue.trim().includes("@")) {
+            setEmailInputError("Enter a valid email");
+            return;
+        }
+
         setLogginIn(true);
+
         const loginData = await signIn("email", {
             email: emailInputValue,
             redirect: false,
         });
+
         setLoginState(loginData);
+
         if (loginData) {
             setLogginIn(false);
         }
@@ -49,7 +57,10 @@ const SignInForm = () => {
         emailForm = (
             <>
                 <TextField
-                    error={emailInputError === "Enter Email"}
+                    error={
+                        emailInputError === "Enter Email" ||
+                        emailInputError === "Enter a valid email"
+                    }
                     fullWidth
                     type="email"
                     id="email"
@@ -58,6 +69,8 @@ const SignInForm = () => {
                     label={
                         emailInputError === "Enter Email"
                             ? "Field cannot be empty"
+                            : emailInputError === "Enter a valid email"
+                            ? "Email Invalid"
                             : "Email"
                     }
                     onFocus={() => setEmailInputError("")}

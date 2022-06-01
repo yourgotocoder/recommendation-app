@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
@@ -12,8 +12,11 @@ import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
 import DashboardIcon from "@mui/icons-material/Dashboard";
+import DialogTitle from "@mui/material/DialogTitle";
+import Dialog from "@mui/material/Dialog";
 import { indigo } from "@mui/material/colors";
 import { useSession } from "next-auth/react";
+import SignInForm from "../SignIn";
 
 type Props = {};
 
@@ -22,6 +25,8 @@ const settings: string[] = ["Profile", "Account", "Dashboard", "Logout"];
 
 const NavbarComponent = (props: Props) => {
     const { data: session, status } = useSession();
+
+    const [openLoginDialog, setOpenLoginDialog] = useState(false);
 
     const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
         null
@@ -43,6 +48,10 @@ const NavbarComponent = (props: Props) => {
 
     const handleCloseUserMenu = () => {
         setAnchorElUser(null);
+    };
+
+    const handleLoginModalOpen = () => {
+        setOpenLoginDialog(true);
     };
 
     let menuDisplay;
@@ -150,7 +159,11 @@ const NavbarComponent = (props: Props) => {
 
     if (status === "unauthenticated") {
         profileDisplay = (
-            <Button variant="contained" sx={{ color: "white" }}>
+            <Button
+                variant="contained"
+                sx={{ color: "white" }}
+                onClick={handleLoginModalOpen}
+            >
                 Login
             </Button>
         );
@@ -171,6 +184,17 @@ const NavbarComponent = (props: Props) => {
                     {profileDisplay}
                 </Toolbar>
             </Container>
+            <Dialog
+                open={openLoginDialog}
+                onClose={() => setOpenLoginDialog(false)}
+            >
+                <DialogTitle>
+                    Enter your email to get the login link.
+                </DialogTitle>
+                <Container maxWidth="xl" sx={{ pb: 3 }}>
+                    <SignInForm />
+                </Container>
+            </Dialog>
         </AppBar>
     );
 };

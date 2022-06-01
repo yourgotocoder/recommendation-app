@@ -10,8 +10,8 @@ const SignIn: NextPage = (props: any) => {
         return <p>Loading</p>;
     }
 
-    if (status === "authenticated") {
-        router.replace("/admin");
+    if (status === "authenticated" && session && session.role) {
+        router.replace(`/${session.role}`);
     }
 
     if (status === "unauthenticated") {
