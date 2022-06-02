@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
@@ -9,22 +9,23 @@ import MenuIcon from "@mui/icons-material/Menu";
 import Container from "@mui/material/Container";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
-import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import DialogTitle from "@mui/material/DialogTitle";
 import Dialog from "@mui/material/Dialog";
 import { indigo } from "@mui/material/colors";
-import { useSession } from "next-auth/react";
+import { signOut } from "next-auth/react";
 import SignInForm from "../SignIn";
+import AuthContext from "../../store/AuthContext";
+import Tooltip from "@mui/material/Tooltip";
 
 type Props = {};
 
 const pages: string[] = [];
-const settings: string[] = ["Profile", "Account", "Dashboard", "Logout"];
+const settings: string[] = ["Logout"];
 
 const NavbarComponent = (props: Props) => {
-    const { data: session, status } = useSession();
+    const authCtx = useContext(AuthContext);
 
     const [openLoginDialog, setOpenLoginDialog] = useState(false);
 
@@ -54,11 +55,24 @@ const NavbarComponent = (props: Props) => {
         setOpenLoginDialog(true);
     };
 
+    const getUserNameInitials = (): string => {
+        if (authCtx.name) {
+            const name = authCtx.name;
+            const initials = name.split(" ");
+            if (initials.length === 1) {
+                return name[0] + name[1];
+            } else {
+                return initials[0][0] + initials[1][0];
+            }
+        }
+        return "";
+    };
+
     let menuDisplay;
     let profileDisplay;
     let menuDesktop;
 
-    if (status === "authenticated") {
+    if (authCtx.status === "authenticated") {
         menuDisplay = (
             <Box
                 sx={{
@@ -124,12 +138,13 @@ const NavbarComponent = (props: Props) => {
 
         profileDisplay = (
             <Box sx={{ flexGrow: 0 }}>
-                <Tooltip title="Open settings">
-                    <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                        <Avatar sx={{ bgcolor: indigo[500] }}>SR</Avatar>
-                    </IconButton>
+                <Tooltip title={!!authCtx.name && authCtx.name}>
+                    <Avatar sx={{ bgcolor: indigo[500] }}>
+                        {getUserNameInitials()}
+                    </Avatar>
                 </Tooltip>
-                <Menu
+
+                {/* <Menu
                     sx={{ mt: "45px" }}
                     id="menu-appbar"
                     anchorEl={anchorElUser}
@@ -152,12 +167,12 @@ const NavbarComponent = (props: Props) => {
                             </Typography>
                         </MenuItem>
                     ))}
-                </Menu>
+                </Menu> */}
             </Box>
         );
     }
 
-    if (status === "unauthenticated") {
+    if (authCtx.status === "unauthenticated") {
         profileDisplay = (
             <Button
                 variant="contained"
@@ -182,6 +197,15 @@ const NavbarComponent = (props: Props) => {
                     {menuDesktop}
                     {menuDisplay}
                     {profileDisplay}
+                    {authCtx.status === "authenticated" && (
+                        <Button
+                            variant="contained"
+                            sx={{ ml: 2 }}
+                            onClick={() => signOut()}
+                        >
+                            Logout
+                        </Button>
+                    )}
                 </Toolbar>
             </Container>
             <Dialog

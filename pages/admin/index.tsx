@@ -2,12 +2,14 @@ import type { NextPage } from "next";
 import { useSession } from "next-auth/react";
 import Head from "next/head";
 import { useRouter } from "next/router";
+import { useContext } from "react";
+import AuthContext from "../../store/AuthContext";
 
 const AdminPage: NextPage = () => {
-    const { data: session, status } = useSession();
+    const authCtx = useContext(AuthContext);
     const router = useRouter();
-    console.log(session);
-    if (status == "unauthenticated") {
+    console.log(authCtx, "From admin");
+    if (authCtx.status == "unauthenticated") {
         router.replace("/");
     }
     return (

@@ -107,7 +107,7 @@ const SignInForm = () => {
     if (!logginIn && loginState?.url) {
         emailForm = (
             <div className={classes["verification-success"]}>
-                A sign-in link has been sent to {emailInputValue}, please login
+                A sign-in link has been sent to <span>{emailInputValue}</span>, please login
                 using that link
             </div>
         );

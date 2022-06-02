@@ -4,6 +4,8 @@ import { SessionProvider } from "next-auth/react";
 import Head from "next/head";
 import FooterComponent from "../components/footer/FooterComponent";
 import MainLayout from "../components/layout/MainLayout";
+import { useContext } from "react";
+import { AuthContextProvider } from "../store/AuthContext";
 
 function MyApp({ Component, pageProps: { session, ...pageProps } }: AppProps) {
     return (
@@ -14,9 +16,11 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }: AppProps) {
                 </title>
                 <meta charSet="UTF-8" />
             </Head>
-            <MainLayout>
-                <Component {...pageProps} />
-            </MainLayout>
+            <AuthContextProvider>
+                <MainLayout>
+                    <Component {...pageProps} />
+                </MainLayout>
+            </AuthContextProvider>
             <FooterComponent />
         </SessionProvider>
     );

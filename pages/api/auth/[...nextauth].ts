@@ -43,6 +43,7 @@ export default NextAuth({
                 });
                 session.userId = foundEmail?._id.toString();
                 session.role = foundEmail?.role;
+                session.name = foundEmail?.name;
             }
             return session;
         },

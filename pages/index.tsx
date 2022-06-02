@@ -5,23 +5,26 @@ import { useRouter } from "next/router";
 import SignInForm from "../components/SignIn";
 import Loading from "../components/ui/Loading";
 import LandingPageComponent from "../components/home/LandingPageComponent";
+import { useContext } from "react";
+import AuthContext from "../store/AuthContext";
 
 const Home: NextPage = () => {
-    const { data: session, status } = useSession();
+    const authCtx = useContext(AuthContext);
+
     const router = useRouter();
 
     let homeContent;
 
-    if (status === "loading") {
+    if (authCtx.status === "loading") {
         homeContent = <Loading />;
     }
 
-    if (status === "unauthenticated") {
+    if (authCtx.status === "unauthenticated") {
         homeContent = <LandingPageComponent />;
     }
 
-    if (status === "authenticated" && session && session.role) {
-        router.replace(`/${session.role}`);
+    if (authCtx.status === "authenticated" && authCtx.role) {
+        router.replace(`/${authCtx.role}`);
     }
 
     if (router.query.error) {

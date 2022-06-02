@@ -1,10 +1,15 @@
 .verifying-email {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 
 .verifying-email-progress {
 }
 
-.verification-success {
+.verification-success span {
+    font-weight: 700;
 }
 
 .verification-failed {
