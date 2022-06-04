@@ -72,6 +72,39 @@ const StudentPage: NextPage = () => {
         setFieldName(updatedFields);
     };
 
+    const handleSubmit = async () => {
+        if (fieldName.length === 3) {
+            const transformedFieldNames = fieldName.reduce(
+                (prevValue, currentValue, indexValue) => {
+                    if (indexValue === 0) {
+                        prevValue.Interest_1 = currentValue;
+                    }
+                    if (indexValue === 1) {
+                        prevValue.Interest_2 = currentValue;
+                    }
+                    if (indexValue === 2) {
+                        prevValue.Interest_3 = currentValue;
+                    }
+                    return prevValue;
+                },
+                {
+                    Interest_1: "",
+                    Interest_2: "",
+                    Interest_3: "",
+                }
+            );
+            const response = await fetch("/api/student", {
+                method: "POST",
+                body: JSON.stringify(transformedFieldNames),
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            });
+            const data = await response;
+            console.log(data);
+        }
+    };
+
     return (
         <div>
             <Head>
@@ -240,7 +273,7 @@ const StudentPage: NextPage = () => {
                         <Button
                             size="large"
                             variant="contained"
-                            onClick={() => console.log(fieldName)}
+                            onClick={handleSubmit}
                             disabled={fieldName.length !== 3}
                         >
                             Submit
