@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import * as xlsx from "xlsx";
 import Button from "@mui/material/Button";
 import UploadFileIcon from "@mui/icons-material/UploadFile";
@@ -9,10 +9,20 @@ type Props = {
 
 const GetExcelData = (props: Props) => {
     const DnDAreaRef = useRef<HTMLDivElement>(null);
+    const [fileHover, setFileHover] = useState(false);
+    const [fileTypeError, setFileTypeError] = useState(false);
+    const [fileProcessing, setFileProcessing] = useState(false);
+    const excelWorkerRef = useRef<Worker>();
 
     useEffect(() => {
         DnDAreaRef.current?.addEventListener("dragover", handleDragOver);
         DnDAreaRef.current?.addEventListener("drop", handleDrop);
+        DnDAreaRef.current?.addEventListener("dragleave", handleDragLeave);
+
+        excelWorkerRef.current = new Worker("/excelWorker.js");
+        excelWorkerRef.current.onmessage = (evt) => {
+            alert(`Webworker Resopnse => ${evt.data}`);
+        };
 
         return () => {
             DnDAreaRef.current?.removeEventListener("dragover", handleDragOver);
@@ -23,20 +33,39 @@ const GetExcelData = (props: Props) => {
     const handleDragOver = (e: DragEvent) => {
         e.preventDefault();
         e.stopPropagation();
-        console.log(e.dataTransfer?.types);
+        setFileHover(true);
     };
+
+    const handleDragLeave = (e: DragEvent) => {
+        e.preventDefault();
+        e.stopPropagation();
+        setFileHover(false);
+    };
+
     const handleDrop = (e: DragEvent) => {
         e.preventDefault();
         e.stopPropagation();
         const { files } = e.dataTransfer!;
-        console.log(files);
+        if (files) {
+            readUploadFile(files[0]);
+        }
+        setFileHover(false);
     };
 
-    const readUploadFile = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files) {
+            readUploadFile(e.target.files[0]);
+        }
+    };
+
+    const readUploadFile = async (file: File) => {
+        if (
+            file.type ===
+            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        ) {
+            excelWorkerRef.current?.postMessage(100);
             const reader = new FileReader();
             reader.onload = (event) => {
-                console.log(event.target);
                 if (event.target) {
                     const data = event.target.result;
                     const workbook = xlsx.read(data, { type: "binary" });
@@ -46,7 +75,10 @@ const GetExcelData = (props: Props) => {
                     props.onUpload(json);
                 }
             };
-            reader.readAsArrayBuffer(e.target.files[0]);
+            reader.readAsArrayBuffer(file);
+            setFileTypeError(false);
+        } else {
+            setFileTypeError(true);
         }
     };
 
@@ -73,7 +105,7 @@ const GetExcelData = (props: Props) => {
                     type="file"
                     accept="xlsx"
                     style={{ display: "none" }}
-                    onChange={readUploadFile}
+                    onChange={handleChange}
                     id="contained-button-file"
                 />
                 <label htmlFor="contained-button-file">
@@ -81,11 +113,18 @@ const GetExcelData = (props: Props) => {
                         variant="contained"
                         color="primary"
                         component="span"
+                        disabled={fileProcessing}
                     >
                         <UploadFileIcon color="action" />
                     </Button>
                 </label>
             </div>
+            {fileTypeError && (
+                <div style={{ color: "red" }}>
+                    Bitch I can only accept .xlsx files
+                </div>
+            )}
+            {fileHover && <p>Hovering</p>}
         </div>
     );
 };

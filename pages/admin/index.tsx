@@ -8,15 +8,12 @@ import AuthContext from "../../store/AuthContext";
 const AdminPage: NextPage = () => {
     const authCtx = useContext(AuthContext);
     const router = useRouter();
-    console.log(authCtx, "From admin");
 
     if (authCtx.status == "unauthenticated") {
         router.replace("/");
     }
 
-    const getExcelData = (data: any) => {
-        console.log(data);
-    };
+    const getExcelData = (data: any) => {};
 
     return (
         <div>
