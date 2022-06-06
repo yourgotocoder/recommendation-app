@@ -18,6 +18,7 @@ import { signOut } from "next-auth/react";
 import SignInForm from "../SignIn";
 import AuthContext from "../../store/AuthContext";
 import Tooltip from "@mui/material/Tooltip";
+import Link from "next/link";
 
 type Props = {};
 
@@ -66,6 +67,13 @@ const NavbarComponent = (props: Props) => {
             }
         }
         return "";
+    };
+
+    const getHomeRoute = (): string => {
+        if (authCtx.role === "admin") return "/admin";
+        if (authCtx.role === "student") return "/student";
+        if (authCtx.role === "faculty") return "/faculty";
+        return "/";
     };
 
     let menuDisplay;
@@ -188,12 +196,22 @@ const NavbarComponent = (props: Props) => {
         <AppBar position="static">
             <Container maxWidth="xl">
                 <Toolbar disableGutters>
-                    <DashboardIcon
-                        sx={{ display: { xs: "none", md: "flex" }, mr: 1 }}
-                    />
-                    <DashboardIcon
-                        sx={{ display: { xs: "flex", md: "none" }, mr: 1 }}
-                    />
+                    <Link href={`${getHomeRoute()}`}>
+                        <a>
+                            <DashboardIcon
+                                sx={{
+                                    display: { xs: "none", md: "flex" },
+                                    mr: 1,
+                                }}
+                            />
+                            <DashboardIcon
+                                sx={{
+                                    display: { xs: "flex", md: "none" },
+                                    mr: 1,
+                                }}
+                            />
+                        </a>
+                    </Link>
                     {menuDesktop}
                     {menuDisplay}
                     {profileDisplay}
