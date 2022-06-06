@@ -22,10 +22,10 @@ import Link from "next/link";
 
 type Props = {};
 
-const pages: string[] = [];
 const settings: string[] = ["Logout"];
 
 const NavbarComponent = (props: Props) => {
+    const pages: string[] = ["Add"];
     const authCtx = useContext(AuthContext);
 
     const [openLoginDialog, setOpenLoginDialog] = useState(false);
