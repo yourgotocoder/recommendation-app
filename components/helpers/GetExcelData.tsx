@@ -19,7 +19,9 @@ const GetExcelData = (props: Props) => {
         DnDAreaRef.current?.addEventListener("drop", handleDrop);
         DnDAreaRef.current?.addEventListener("dragleave", handleDragLeave);
 
-        excelWorkerRef.current = new Worker("/excelWorker.js");
+        excelWorkerRef.current = new Worker("/excelWorker.js", {
+            type: "module",
+        });
         excelWorkerRef.current.onmessage = (evt) => {
             alert(`Webworker Resopnse => ${evt.data}`);
         };
@@ -63,19 +65,19 @@ const GetExcelData = (props: Props) => {
             file.type ===
             "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
         ) {
-            excelWorkerRef.current?.postMessage(100);
-            const reader = new FileReader();
-            reader.onload = (event) => {
-                if (event.target) {
-                    const data = event.target.result;
-                    const workbook = xlsx.read(data, { type: "binary" });
-                    const sheetName = workbook.SheetNames[0];
-                    const worksheet = workbook.Sheets[sheetName];
-                    const json = xlsx.utils.sheet_to_json(worksheet);
-                    props.onUpload(json);
-                }
-            };
-            reader.readAsArrayBuffer(file);
+            excelWorkerRef.current?.postMessage(file);
+            // const reader = new FileReader();
+            // reader.onload = (event) => {
+            //     if (event.target) {
+            //         const data = event.target.result;
+            //         const workbook = xlsx.read(data, { type: "binary" });
+            //         const sheetName = workbook.SheetNames[0];
+            //         const worksheet = workbook.Sheets[sheetName];
+            //         const json = xlsx.utils.sheet_to_json(worksheet);
+            //         props.onUpload(json);
+            //     }
+            // };
+            // reader.readAsArrayBuffer(file);
             setFileTypeError(false);
         } else {
             setFileTypeError(true);
