@@ -25,7 +25,7 @@ type Props = {};
 const settings: string[] = ["Logout"];
 
 const NavbarComponent = (props: Props) => {
-    const pages: string[] = ["Add"];
+    const pages: string[] = [];
     const authCtx = useContext(AuthContext);
 
     const [openLoginDialog, setOpenLoginDialog] = useState(false);
