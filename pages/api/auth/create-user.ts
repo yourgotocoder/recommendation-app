@@ -52,6 +52,8 @@ export default async function handler(
             const client = await connectToDatabase();
             const db = client.db();
             const collection = db.collection("user");
+            const alreadyExisting = await collection.findOne({ emailId });
+            console.log(alreadyExisting);
             const newUser = await collection.insertOne(req.body);
             res.status(200).json({ error: false, message: "Created User" });
             return;
