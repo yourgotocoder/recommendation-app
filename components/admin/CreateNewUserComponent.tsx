@@ -7,6 +7,7 @@ import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import TextField from "@mui/material/TextField";
 import Chip from "@mui/material/Chip";
+import Alert from "@mui/material/Alert";
 
 type Props = {};
 
@@ -22,15 +23,22 @@ const CreateNewUserComponent = (props: Props) => {
     const [emailIdError, setEmailIdError] = useState(true);
     const [userIdError, setUserIdError] = useState(false);
 
+    const [verifyingUser, setVerifyingUser] = useState(false);
+    const [verificationError, setVerificationError] = useState(false);
+    const [verificationSuccess, setVerificationSuccess] = useState(false);
+    const [verificationMessage, setVerificationMessage] = useState("");
+
     const handleNameChange = (
         e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
     ) => {
-        setName(e.target.value.trim());
+        setName(e.target.value);
         if (e.target.value.trim() !== "") {
             setNameError(false);
         } else {
             setNameError(true);
         }
+        setVerificationError(false);
+        setVerificationSuccess(false);
     };
 
     const handleEmailChange = (
@@ -56,6 +64,42 @@ const CreateNewUserComponent = (props: Props) => {
         } else {
             setUserIdError(true);
         }
+    };
+
+    const handleCreateUser = async () => {
+        const newUser = {
+            name,
+            emailId,
+            role: newUserType,
+            [`${newUserType === "faclulty" ? "empCode" : "regno"}`]: userId,
+        };
+        setVerifyingUser(true);
+        const response = await fetch("/api/auth/create-user", {
+            method: "POST",
+            body: JSON.stringify(newUser),
+            headers: {
+                "Content-Type": "application/json",
+            },
+        });
+        const data = await response.json();
+        if (data.error) {
+            setVerifyingUser(false);
+            setVerificationMessage(data.message);
+            setVerificationError(true);
+            setVerificationSuccess(false);
+        } else {
+            setVerifyingUser(false);
+            setVerificationMessage(data.message);
+            setName("");
+            setEmailId("");
+            setUserId("");
+            setNameError(true);
+            setEmailIdError(true);
+            setUserIdError(true);
+            setVerificationError(false);
+            setVerificationSuccess(true);
+        }
+        console.log(data);
     };
 
     return (
@@ -126,10 +170,30 @@ const CreateNewUserComponent = (props: Props) => {
                     </Box>
                     <Button
                         variant="contained"
-                        disabled={nameError || userIdError || emailIdError}
+                        disabled={
+                            nameError ||
+                            userIdError ||
+                            emailIdError ||
+                            verifyingUser
+                        }
+                        onClick={handleCreateUser}
                     >
                         Add User
                     </Button>
+                    {(verificationError || verificationSuccess) && (
+                        <Alert
+                            severity={
+                                verificationError
+                                    ? "error"
+                                    : verificationSuccess
+                                    ? "success"
+                                    : "info"
+                            }
+                            sx={{ mt: 2 }}
+                        >
+                            {verificationMessage}
+                        </Alert>
+                    )}
                 </Box>
             )}
             {!creatingUser && (
