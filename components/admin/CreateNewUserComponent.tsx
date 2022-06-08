@@ -71,7 +71,7 @@ const CreateNewUserComponent = (props: Props) => {
             name,
             emailId,
             role: newUserType,
-            [`${newUserType === "faclulty" ? "empCode" : "regno"}`]: userId,
+            [`${newUserType === "faculty" ? "empCode" : "regno"}`]: userId,
         };
         setVerifyingUser(true);
         const response = await fetch("/api/auth/create-user", {
