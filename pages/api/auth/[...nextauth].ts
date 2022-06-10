@@ -3,7 +3,6 @@ import EmailProvider from "next-auth/providers/email";
 import { MongoDBAdapter } from "@next-auth/mongodb-adapter";
 import connectToDatabase from "../../../lib/databaseClient";
 
-
 export default NextAuth({
     secret: process.env.SECRET,
     pages: {
