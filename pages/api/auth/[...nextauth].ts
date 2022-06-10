@@ -2,9 +2,7 @@ import NextAuth from "next-auth/next";
 import EmailProvider from "next-auth/providers/email";
 import { MongoDBAdapter } from "@next-auth/mongodb-adapter";
 import connectToDatabase from "../../../lib/databaseClient";
-import { stringify } from "querystring";
-import { Session, User } from "next-auth";
-import { JWT } from "next-auth/jwt";
+
 
 export default NextAuth({
     secret: process.env.SECRET,
