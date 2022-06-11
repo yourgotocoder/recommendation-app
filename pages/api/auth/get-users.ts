@@ -16,10 +16,14 @@ export default async function handler(
   if (req.method === "GET") {
     const session = await getSession({req});
     if (session && session.role === "admin") {
-
+      const client = await connectToDatabase();
+      const db = client.db();
+      const collection = db.collection("user");
+      const rawData = await collection.find().toArray();
+      const data = rawData.filter(user => user.emailId !== session.user?.email);
       res.status(200).json({error: false, data});
     } else {
-      res.json({error: true, message: "Authorization missing"})
+      res.status(401).json({error: true, message: "Authorization missing"})
     }
     return
   }

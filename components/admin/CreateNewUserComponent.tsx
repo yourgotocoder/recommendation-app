@@ -104,154 +104,142 @@ const CreateNewUserComponent = (props: Props) => {
     };
 
     return (
-        <Card
+      <Card
+        sx={{
+          minWidth: 275,
+          maxWidth: 400,
+          margin: "auto",
+          textAlign: "center",
+          padding: 3,
+        }}
+      >
+        <CardContent>
+          <Typography sx={{ fontSize: 14 }} color="text.primary" gutterBottom>
+            Create a new user
+          </Typography>
+        </CardContent>
+        {creatingUser && (
+          <Box
             sx={{
-                minWidth: 275,
-                maxWidth: 400,
-                margin: "auto",
-                textAlign: "center",
-                padding: 3,
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              flexDirection: "column",
             }}
-        >
-            <CardContent>
-                <Typography
-                    sx={{ fontSize: 14 }}
-                    color="text.primary"
-                    gutterBottom
+          >
+            <TextField
+              label="Name"
+              variant="outlined"
+              value={name}
+              onChange={handleNameChange}
+              disabled={verifyingUser}
+            ></TextField>
+            <TextField
+              label={newUserType === "faculty" ? "Emp Code" : "Regno"}
+              type="number"
+              variant="outlined"
+              sx={{ margin: "1rem 0" }}
+              value={userId}
+              onChange={handleUserIdChange}
+              disabled={verifyingUser}
+            ></TextField>
+            <TextField
+              label="Email Id"
+              variant="outlined"
+              sx={{ margin: "1rem 0" }}
+              type="email"
+              value={emailId}
+              onChange={handleEmailChange}
+              disabled={verifyingUser}
+            ></TextField>
+            <Box
+              sx={{
+                textAlign: "left",
+                margin: "1rem 0",
+              }}
+            >
+              Role:
+              <Chip
+                label={newUserType === "faculty" ? "faculty" : "student"}
+                variant="outlined"
+                sx={{ ml: 1 }}
+              ></Chip>
+            </Box>
+            return
+            <Button
+              variant="contained"
+              disabled={
+                nameError || userIdError || emailIdError || verifyingUser
+              }
+              onClick={handleCreateUser}
+              sx={{ mb: 1 }}
+            >
+              Add User
+            </Button>
+            {verifyingUser && (
+              <Box sx={{ margin: "2px auto" }}>
+                <Card
+                  sx={{
+                    padding: 2,
+                    border: "none",
+                    boxShadow: "none",
+                    background: "rgba(75, 181, 67, 0.5)",
+                  }}
                 >
-                    Create a new user
-                </Typography>
-            </CardContent>
-            {creatingUser && (
-                <Box
-                    sx={{
-                        display: "flex",
-                        justifyContent: "center",
-                        alignItems: "center",
-                        flexDirection: "column",
-                    }}
-                >
-                    <TextField
-                        label="Name"
-                        variant="outlined"
-                        value={name}
-                        onChange={handleNameChange}
-                        disabled={verifyingUser}
-                    ></TextField>
-                    <TextField
-                        label={newUserType === "faculty" ? "Emp Code" : "Regno"}
-                        type="number"
-                        variant="outlined"
-                        sx={{ margin: "1rem 0" }}
-                        value={userId}
-                        onChange={handleUserIdChange}
-                        disabled={verifyingUser}
-                    ></TextField>
-                    <TextField
-                        label="Email Id"
-                        variant="outlined"
-                        sx={{ margin: "1rem 0" }}
-                        type="email"
-                        value={emailId}
-                        onChange={handleEmailChange}
-                        disabled={verifyingUser}
-                    ></TextField>
-                    <Box
-                        sx={{
-                            textAlign: "left",
-                            margin: "1rem 0",
-                        }}
-                    >
-                        Role:
-                        <Chip
-                            label={
-                                newUserType === "faculty"
-                                    ? "faculty"
-                                    : "student"
-                            }
-                            variant="outlined"
-                            sx={{ ml: 1 }}
-                        ></Chip>
-                    </Box>
-                    <Button
-                        variant="contained"
-                        disabled={
-                            nameError ||
-                            userIdError ||
-                            emailIdError ||
-                            verifyingUser
-                        }
-                        onClick={handleCreateUser}
-                        sx={{ mb: 1 }}
-                    >
-                        Add User
-                    </Button>
-                    {verifyingUser && (
-                        <Box sx={{ margin: "2px auto" }}>
-                            <Card
-                                sx={{
-                                    padding: 2,
-                                    border: "none",
-                                    boxShadow: "none",
-                                    background: "rgba(75, 181, 67, 0.5)",
-                                }}
-                            >
-                                <CircularProgress />
-                                <Typography>
-                                    Verifying email and{" "}
-                                    {newUserType === "student"
-                                        ? "regno"
-                                        : "empCode"}
-                                </Typography>
-                            </Card>
-                        </Box>
-                    )}
-                    {(verificationError || verificationSuccess) && (
-                        <Alert
-                            severity={
-                                verificationError
-                                    ? "error"
-                                    : verificationSuccess
-                                    ? "success"
-                                    : "info"
-                            }
-                            sx={{ mt: 2 }}
-                        >
-                            {verificationMessage}
-                        </Alert>
-                    )}
-                </Box>
+                  <CircularProgress />
+                  <Typography>
+                    Verifying email and{" "}
+                    {newUserType === "student" ? "regno" : "empCode"}
+                  </Typography>
+                </Card>
+              </Box>
             )}
-            {!creatingUser && (
-                <CardActions
-                    sx={{
-                        display: "flex",
-                        justifyContent: "center",
-                    }}
-                >
-                    <Button
-                        size="small"
-                        variant="contained"
-                        onClick={() => {
-                            setCreatingUser(true);
-                            setNewUserType("student");
-                        }}
-                    >
-                        Student
-                    </Button>
-                    <Button
-                        size="small"
-                        variant="contained"
-                        onClick={() => {
-                            setCreatingUser(true);
-                            setNewUserType("faculty");
-                        }}
-                    >
-                        Faculty
-                    </Button>
-                </CardActions>
+            {(verificationError || verificationSuccess) && (
+              <Alert
+                severity={
+                  verificationError
+                    ? "error"
+                    : verificationSuccess
+                    ? "success"
+                    : "info"
+                }
+                sx={{ mt: 2 }}
+              >
+                {verificationMessage}
+              </Alert>
             )}
-        </Card>
+          </Box>
+        )}
+        {!creatingUser && (
+          <CardActions
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+            }}
+          >
+            <Button
+              size="small"
+              variant="contained"
+              onClick={() => {
+                setCreatingUser(true);
+                setNewUserType("student");
+              }}
+            >
+              Student
+            </Button>
+            <Button
+              size="small"
+              variant="contained"
+              onClick={() => {
+                setCreatingUser(true);
+                setNewUserType("faculty");
+              }}
+            >
+              Faculty
+            </Button>
+          </CardActions>
+        )}
+      </Card>
     );
 };
 

@@ -1,11 +1,14 @@
-import React from 'react'
+import React, { useEffect } from "react";
 
-type Props = {}
+type Props = {};
 
 const ViewUsers = (props: Props) => {
-  return (
-    <div>ViewUsers</div>
-  )
-}
+  useEffect(() => {
+    fetch("/api/auth/get-users")
+      .then((res) => res.json())
+      .then((data) => console.log(data));
+  }, []);
+  return <div>ViewUsers</div>;
+};
 
-export default ViewUsers
+export default ViewUsers;

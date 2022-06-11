@@ -13,6 +13,7 @@ import Typography from "@mui/material/Typography";
 import TextField from "@mui/material/TextField";
 import Chip from "@mui/material/Chip";
 import CreateNewUserComponent from "../../components/admin/CreateNewUserComponent";
+import ViewUsers from "../../components/admin/ViewUsers";
 
 const AdminPage: NextPage = () => {
     const authCtx = useContext(AuthContext);
@@ -42,6 +43,7 @@ const AdminPage: NextPage = () => {
                     }}
                 >
                     <CreateNewUserComponent />
+                    <ViewUsers/>
                 </Box>
             </main>
         </>
