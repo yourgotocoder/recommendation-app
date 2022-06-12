@@ -40,6 +40,7 @@ const AdminPage: NextPage = () => {
                         alignItems: "center",
                         justifyContent: "center",
                         minHeight: "80vh",
+                        flexDirection: "column"
                     }}
                 >
                     <CreateNewUserComponent />
