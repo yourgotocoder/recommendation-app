@@ -49,7 +49,7 @@ const AdminPage: NextPage = () => {
                     }}
                 >
                     <CreateNewUserComponent />
-                    {/* <GetExcelData onUpload={handleExcelData} /> */}
+                    <GetExcelData onUpload={handleExcelData} />
                     <ViewUsers />
                 </Box>
             </main>

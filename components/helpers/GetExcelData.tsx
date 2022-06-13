@@ -1,22 +1,26 @@
 import React, { useEffect, useRef, useState } from "react";
 import Button from "@mui/material/Button";
 import UploadFileIcon from "@mui/icons-material/UploadFile";
-import { useWorker } from "react-hooks-worker";
-
-const createWorker = (): Worker =>
-    new Worker("./excel.worker.js", { type: "module" });
 
 type Props = {
     onUpload: (data: any) => void;
 };
+
+const fileToDataUri = (file: File) =>
+    new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = (event) => {
+            resolve(event.target?.result);
+        };
+        reader.readAsDataURL(file);
+    });
 
 const GetExcelData = (props: Props) => {
     const DnDAreaRef = useRef<HTMLDivElement>(null);
     const [fileHover, setFileHover] = useState(false);
     const [fileTypeError, setFileTypeError] = useState(false);
     const [fileProcessing, setFileProcessing] = useState(false);
-    const [file, setFile] = useState<string | ArrayBuffer | null>();
-    const { result, error } = useWorker(createWorker, file);
+    const [fileData, setFileData] = useState<string | Blob>();
 
     useEffect(() => {
         DnDAreaRef.current?.addEventListener("dragover", handleDragOver);
@@ -62,17 +66,19 @@ const GetExcelData = (props: Props) => {
             file.type ===
             "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
         ) {
-            const reader = new FileReader();
-            reader.onload = (event) => {
-                if (event.target) {
-                    const data = event.target.result;
-                    setFile(data);
-                }
-            };
-            reader.readAsArrayBuffer(file);
-            setFileTypeError(false);
-        } else {
-            setFileTypeError(true);
+            if (!file) {
+                setFileData("");
+                return;
+            }
+
+            // formData.append("filename", { file });
+
+            const response = await fetch("/api/auth/create-multiple-users", {
+                method: "POST",
+                body: fileData,
+            });
+            const data = await response.json();
+            console.log(data);
         }
     };
 
