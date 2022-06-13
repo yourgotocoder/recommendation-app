@@ -14,12 +14,15 @@
     "@mui/icons-material": "^5.8.2",
     "@mui/material": "^5.8.2",
     "@next-auth/mongodb-adapter": "^1.0.3",
+    "@zeit/next-workers": "^1.0.1-canary.1",
     "mongodb": "^4.6.0",
     "next": "12.1.6",
     "next-auth": "^4.3.4",
+    "next-connect": "^0.12.2",
     "nodemailer": "^6.7.5",
     "react": "18.1.0",
     "react-dom": "18.1.0",
+    "react-hooks-worker": "^1.0.4",
     "xlsx": "^0.18.5"
   },
   "devDependencies": {

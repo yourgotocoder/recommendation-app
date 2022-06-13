@@ -14,6 +14,7 @@ import TextField from "@mui/material/TextField";
 import Chip from "@mui/material/Chip";
 import CreateNewUserComponent from "../../components/admin/CreateNewUserComponent";
 import ViewUsers from "../../components/admin/ViewUsers";
+import GetExcelData from "../../components/helpers/GetExcelData";
 
 const AdminPage: NextPage = () => {
     const authCtx = useContext(AuthContext);
@@ -22,6 +23,10 @@ const AdminPage: NextPage = () => {
     if (authCtx.status == "unauthenticated") {
         router.replace("/");
     }
+
+    const handleExcelData = (data: any) => {
+        console.log(data);
+    };
 
     return (
         <>
@@ -40,11 +45,12 @@ const AdminPage: NextPage = () => {
                         alignItems: "center",
                         justifyContent: "center",
                         minHeight: "80vh",
-                        flexDirection: "column"
+                        flexDirection: "column",
                     }}
                 >
                     <CreateNewUserComponent />
-                    <ViewUsers/>
+                    {/* <GetExcelData onUpload={handleExcelData} /> */}
+                    <ViewUsers />
                 </Box>
             </main>
         </>

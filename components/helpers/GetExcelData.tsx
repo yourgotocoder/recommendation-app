@@ -1,7 +1,10 @@
 import React, { useEffect, useRef, useState } from "react";
-import * as xlsx from "xlsx";
 import Button from "@mui/material/Button";
 import UploadFileIcon from "@mui/icons-material/UploadFile";
+import { useWorker } from "react-hooks-worker";
+
+const createWorker = (): Worker =>
+    new Worker("./excel.worker.js", { type: "module" });
 
 type Props = {
     onUpload: (data: any) => void;
@@ -12,19 +15,13 @@ const GetExcelData = (props: Props) => {
     const [fileHover, setFileHover] = useState(false);
     const [fileTypeError, setFileTypeError] = useState(false);
     const [fileProcessing, setFileProcessing] = useState(false);
-    const excelWorkerRef = useRef<Worker>();
+    const [file, setFile] = useState<string | ArrayBuffer | null>();
+    const { result, error } = useWorker(createWorker, file);
 
     useEffect(() => {
         DnDAreaRef.current?.addEventListener("dragover", handleDragOver);
         DnDAreaRef.current?.addEventListener("drop", handleDrop);
         DnDAreaRef.current?.addEventListener("dragleave", handleDragLeave);
-
-        excelWorkerRef.current = new Worker("/excelWorker.js", {
-            type: "module",
-        });
-        excelWorkerRef.current.onmessage = (evt) => {
-            alert(`Webworker Resopnse => ${evt.data}`);
-        };
 
         return () => {
             DnDAreaRef.current?.removeEventListener("dragover", handleDragOver);
@@ -65,19 +62,14 @@ const GetExcelData = (props: Props) => {
             file.type ===
             "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
         ) {
-            excelWorkerRef.current?.postMessage(file);
-            // const reader = new FileReader();
-            // reader.onload = (event) => {
-            //     if (event.target) {
-            //         const data = event.target.result;
-            //         const workbook = xlsx.read(data, { type: "binary" });
-            //         const sheetName = workbook.SheetNames[0];
-            //         const worksheet = workbook.Sheets[sheetName];
-            //         const json = xlsx.utils.sheet_to_json(worksheet);
-            //         props.onUpload(json);
-            //     }
-            // };
-            // reader.readAsArrayBuffer(file);
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                if (event.target) {
+                    const data = event.target.result;
+                    setFile(data);
+                }
+            };
+            reader.readAsArrayBuffer(file);
             setFileTypeError(false);
         } else {
             setFileTypeError(true);
