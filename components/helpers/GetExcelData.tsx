@@ -6,15 +6,6 @@ type Props = {
     onUpload: (data: any) => void;
 };
 
-const fileToDataUri = (file: File) =>
-    new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = (event) => {
-            resolve(event.target?.result);
-        };
-        reader.readAsDataURL(file);
-    });
-
 const GetExcelData = (props: Props) => {
     const DnDAreaRef = useRef<HTMLDivElement>(null);
     const [fileHover, setFileHover] = useState(false);
@@ -70,12 +61,12 @@ const GetExcelData = (props: Props) => {
                 setFileData("");
                 return;
             }
-
-            // formData.append("filename", { file });
+            const formData = new FormData();
+            formData.append("file", file);
 
             const response = await fetch("/api/auth/create-multiple-users", {
                 method: "POST",
-                body: fileData,
+                body: formData,
             });
             const data = await response.json();
             console.log(data);
